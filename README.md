@@ -37,7 +37,7 @@ Second:
 gh auth login
 ```
 
-Steps:
+Steps:   
 ? What account do you want to log into? GitHub.com   
 ? What is your preferred protocol for Git operations? HTTPS   
 ? Authenticate Git with your GitHub credentials? Yes     
