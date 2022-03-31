@@ -38,10 +38,10 @@ gh auth login
 ```
 
 Steps:
-? What account do you want to log into? GitHub.com
-? What is your preferred protocol for Git operations? HTTPS
-? Authenticate Git with your GitHub credentials? Yes   
-? How would you like to authenticate GitHub CLI? Login with a web browser
+? What account do you want to log into? GitHub.com   
+? What is your preferred protocol for Git operations? HTTPS   
+? Authenticate Git with your GitHub credentials? Yes     
+? How would you like to authenticate GitHub CLI? Login witha web browser   
 
 It opens a page in the browser, we put the one-time code, and login with our account.  
 All should be set now.
