@@ -1,6 +1,12 @@
 # Closer-Challenge
 Closer Project Challenge on Insurance Data
 
+Table of content
+- [Closer-Challenge](#closer-challenge)
+- [Goal](#goal)
+- [Setup git](#setup-git)
+- [Setup github](#setup-github)
+- [Pull repository](#pull-repository)
 # Goal
 
 Taken from the slides:
@@ -45,3 +51,10 @@ Steps:
 
 It opens a page in the browser, we put the one-time code, and login with our account.  
 All should be set now.
+
+# Pull repository
+
+Write in the terminal:
+```bash
+gh repo clone Portugapt/Closer-Challenge
+```
