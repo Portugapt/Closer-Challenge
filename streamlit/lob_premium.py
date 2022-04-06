@@ -19,6 +19,9 @@ def main():
                             'True Premium':'Premium'}
 
     lobs_list = ['Life', 'Household', 'Motor','Health', 'Work Compensation']
+
+    var_map_splits = {'Above-Below': 'SPLIT_FEATURE',
+                'Classes':'fe_bin_plob_motor'}
     
     @st.cache(persist = True, allow_output_mutation=True)
     def load_data():
@@ -33,6 +36,10 @@ def main():
     
     dfInsurance = load_data()
 
+    SHOW_DATAFRAME = st.checkbox('Show Dataframe examples')
+    if SHOW_DATAFRAME:
+        st.dataframe(dfInsurance.head(5))
+
     VAR_LOB = st.selectbox(
                     'Line of Business Selected',
                     ('Life', 'Household', 'Motor','Health', 'Work Compensation'))
@@ -40,6 +47,10 @@ def main():
     VAR_TO_VIEW = st.selectbox(
                     'Type of Variable to analyse',
                     ('Ratio LOB Premium to Total', 'True Premium'))
+
+    SPLIT_FEATURE = st.selectbox(
+                    'Split Feature',
+                    ('Above-Below', 'Classes'))
 
     SHOW_PLOTS = st.checkbox('Show Plots')
 
@@ -55,9 +66,10 @@ def main():
             st.dataframe(dfSplitted.loc[dfSplitted['SPLIT_FEATURE'] == 'Above'].head(5))
             st.dataframe(dfSplitted.loc[dfSplitted['SPLIT_FEATURE'] == 'Below'].head(5))
         
+        
         ## Plot Total Premium Distribution on Above and Below Datasets
         st.subheader(f'Plot Total Premium')
-        plot_ttp = sns.FacetGrid(dfSplitted, col="SPLIT_FEATURE", col_wrap=2)
+        plot_ttp = sns.FacetGrid(dfSplitted, col=var_map_splits[SPLIT_FEATURE], col_wrap=2)
         plot_ttp.map(sns.histplot, 'amt_premium_total')
         for ax, lbl in zip(plot_ttp.axes.flatten(), [0, 1]):
             # print(ax, lbl)
@@ -66,7 +78,7 @@ def main():
 
         ## Selected Feature histogram
         st.subheader(f'{VAR_LOB}:{RT_THRESHOLD}, {var_map_descriptive[VAR_TO_VIEW]} of {VAR_LOB}')
-        plot_sfh = sns.FacetGrid(dfSplitted, col="SPLIT_FEATURE", col_wrap=2)
+        plot_sfh = sns.FacetGrid(dfSplitted, col=var_map_splits[SPLIT_FEATURE], col_wrap=2)
         plot_sfh.map(sns.histplot, VIEW_FEATURE)
         for ax, lbl in zip(plot_sfh.axes.flatten(), [0, 1]):
             # print(ax, lbl)
@@ -77,15 +89,12 @@ def main():
         plot_vars = [lob for lob in lobs_list if lob != VAR_LOB]
         for lob_plot in plot_vars:
             st.subheader(f'{VAR_LOB}:{RT_THRESHOLD}, {var_map_descriptive[VAR_TO_VIEW]} of {lob_plot}')
-            plot_pol = sns.FacetGrid(dfSplitted, col="SPLIT_FEATURE", col_wrap=2)
+            plot_pol = sns.FacetGrid(dfSplitted, col=var_map_splits[SPLIT_FEATURE], col_wrap=2)
             plot_pol.map(sns.histplot, f'{var_map[VAR_TO_VIEW]}{lobs_map[lob_plot]}')
             for ax, lbl in zip(plot_pol.axes.flatten(), [0, 1]):
                 # print(ax, lbl)
                 ax.set_xlabel(f'LOB: {lob_plot} Premium')
             st.pyplot(plot_pol)
-
-
-
 
 if __name__ == '__main__':
     main()
