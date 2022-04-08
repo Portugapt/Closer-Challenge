@@ -1,15 +1,37 @@
 ### Read Libraries
+import time
 import pandas as pd
 import numpy as np
 from sklearn.impute import KNNImputer
 
+timestr = time.strftime("%Y%m%d-%H%M%S")
+
 ### Import Dataset
-dataset = pd.read_excel('../data/dataset.xlsx')
+dataset = pd.read_excel('./data/dataset.xlsx')
 dfInsurance = dataset.copy()
 
-np.random.seed(42)
-if "Set" not in dfInsurance.columns:
-    dfInsurance["Set"] = np.random.choice(["train", "test"], p =[.7, .3], size=(dfInsurance.shape[0],))
+columns_map = {"Customer Identity":"cod_cust_id",
+                "First Policy´s Year": "dt_fpy",
+                "Customer Age": "atr_cust_age",
+                "Educational Degree":"dsc_edu_deg",
+                "Gross Monthly Salary": "amt_gms",
+                "Geographic Living Area": "atr_gla",
+                "Has Children (Y=1)":"flg_children",
+                "Customer Monetary Value":"amt_cmv",
+                "Claims Rate":"rt_cr",
+                "Premiums in LOB: Motor":"amt_plob_motor",
+                "Premiums in LOB: Household":"amt_plob_household",
+                "Premiums in LOB: Health":"amt_plob_health",
+                "Premiums in LOB:  Life":"amt_plob_life",
+                "Premiums in LOB: Work Compensations":"amt_plob_wcomp"}
+
+columns_map_reverse = {v: k for k, v in columns_map.items()}
+
+dfInsurance = dfInsurance.rename(columns=columns_map)
+
+#np.random.seed(42)
+#if "Set" not in dfInsurance.columns:
+#    dfInsurance["Set"] = np.random.choice(["train", "test"], p =[.7, .3], size=(dfInsurance.shape[0],))
 
 ######
 ## [1] Remove Duplicates 
@@ -29,8 +51,42 @@ dfInsurance.duplicated(subset=dfInsurance.columns.difference(['cod_cust_id'])).s
 dfInsurance = dfInsurance.loc[~((dfInsurance['dt_fpy'] > 2022) | 
                         (dfInsurance['atr_cust_age'] > 100))]
 
+
 ######
-## [3] Add Outliers Columns
+## [3] Add Column: Education Degree to Integer
+## Application: Addition
+######
+
+# Apply lambda function to column
+dfInsurance['atr_edu_deg'] = dfInsurance['dsc_edu_deg'].map(lambda x: str(x)[0])
+# replace values 'n' from column atr_edu_deg for NaN
+dfInsurance['atr_edu_deg'] = dfInsurance['atr_edu_deg'].replace('n', np.NaN)
+# convert to numeric column atr_edu_deg
+dfInsurance['atr_edu_deg'] = pd.to_numeric(dfInsurance['atr_edu_deg'])
+
+######
+## [4] Fill null values with closest neighbors values
+## Application: Transformation
+######
+
+X = dfInsurance.loc[:, ~dfInsurance.columns.isin(['cod_cust_id', 'dsc_edu_deg', 'flg_children'])]
+
+# define imputer
+imputer = KNNImputer(n_neighbors=5, weights='uniform', metric='nan_euclidean')
+
+# fit on the dataset
+imputer.fit(X)
+
+# transform the dataset
+Xtrans = imputer.transform(X)
+
+imputer_column_names = ['dt_fpy', 'atr_cust_age', 'amt_gms', 'atr_gla', 'amt_cmv', 'rt_cr', 'amt_plob_motor', 'amt_plob_household', 'amt_plob_health', 'amt_plob_life', 'amt_plob_wcomp', 'atr_edu_deg']
+
+dfX = pd.DataFrame(data=Xtrans, columns=imputer_column_names)
+dfInsurance.update(dfX)
+
+######
+## [5] Add Outliers Columns
 ## Application: Addition
 ######
 
@@ -57,39 +113,6 @@ for column in dfInsurance.columns[1:-2]:
         dfInsurance['outlier_candidate'] = np.where((dfInsurance[column] > lim_sup) | (dfInsurance[column] < lim_inf), dfInsurance['outlier_candidate'].astype(str) +'%' + column, dfInsurance['outlier_candidate'])
 
 dfInsurance['outlier_candidate'] = dfInsurance['outlier_candidate'].apply(lambda x: x.lstrip('%'))
-
-######
-## [4] Add Column: Education Degree to Integer
-## Application: Addition
-######
-
-# Apply lambda function to column
-dfInsurance['atr_edu_deg'] = dfInsurance['dsc_edu_deg'].map(lambda x: str(x)[0])
-# replace values 'n' from column atr_edu_deg for NaN
-dfInsurance['atr_edu_deg'] = dfInsurance['atr_edu_deg'].replace('n', np.NaN)
-# convert to numeric column atr_edu_deg
-dfInsurance['atr_edu_deg'] = pd.to_numeric(dfInsurance['atr_edu_deg'])
-
-######
-## [5] Fill null values with closest neighbors values
-## Application: Transformation
-######
-
-X = dfInsurance.loc[:, ~dfInsurance.columns.isin(['cod_cust_id', 'dsc_edu_deg', 'flg_children'])]
-
-# define imputer
-imputer = KNNImputer(n_neighbors=5, weights='uniform', metric='nan_euclidean')
-
-# fit on the dataset
-imputer.fit(X)
-
-# transform the dataset
-Xtrans = imputer.transform(X)
-
-imputer_column_names = ['dt_fpy', 'atr_cust_age', 'amt_gms', 'atr_gla', 'amt_cmv', 'rt_cr', 'amt_plob_motor', 'amt_plob_household', 'amt_plob_health', 'amt_plob_life', 'amt_plob_wcomp', 'atr_edu_deg']
-
-dfX = pd.DataFrame(data=Xtrans, columns=imputer_column_names)
-dfInsurance.update(dfX)
 
 ######
 ## [6] Add column: Total amount of premiums
@@ -218,3 +241,5 @@ choices = ['Q1', 'Q4', 'Q2', 'Q3']
 dfInsurance["fe_cmv_cr_quadrant_Type2"] = np.select(conditions, choices, default=np.nan)
 
 
+
+dfInsurance.to_csv(f'./data/{timestr}_dataset.csv')
