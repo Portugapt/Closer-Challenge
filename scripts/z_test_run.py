@@ -5,7 +5,7 @@ import os
 cwd = os.getcwd()
 
 print(cwd)
-project_uri = "C:\\Users\\JoãoMonteiro\\Documents\\dev\\formacao\\Closer-Challenge"
+project_uri = "https://github.com/Portugapt/Closer-Challenge"
 params = {"log_this_string": "Test_String"}
 
-mlflow.run(project_uri, parameters=params, use_conda = True, entry_point = 'mlflow_test')
+mlflow.run(project_uri, version = 'main', parameters=params, entry_point = 'mlflow_test')

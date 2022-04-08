@@ -6,12 +6,12 @@ entry_points:
   mlflow_test:
     parameters:
       log_this_string: string
-    command: "python ./scripts/z_test.py {log_this_string}"
+    command: "python scripts/z_test.py {log_this_string}"
   train_client_value:
     parameters:
       data_file: path
       regularization: {type: float, default: 0.1}
-    command: "python ./scripts/z_train_client_value.py -r {regularization} {data_file}"
+    command: "python scripts/z_train_client_value.py -r {regularization} {data_file}"
   validate_client_value:
     parameters:
       data_file: path
