@@ -2,7 +2,7 @@ name: Closer-Challenge
 conda_env: environment.yaml
 
 entry_points:
-  mlflow_test:
+  main:
     parameters:
       log_this_string: string
     command: "python z_test.py {log_this_string}"
