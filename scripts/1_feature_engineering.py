@@ -7,7 +7,7 @@ from sklearn.impute import KNNImputer
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
 ### Import Dataset
-dataset = pd.read_excel('./data/dataset.xlsx')
+dataset = pd.read_excel('./Closer-Challenge/data/dataset.xlsx')
 dfInsurance = dataset.copy()
 
 columns_map = {"Customer Identity":"cod_cust_id",
@@ -65,7 +65,13 @@ dfInsurance['atr_edu_deg'] = dfInsurance['atr_edu_deg'].replace('n', np.NaN)
 dfInsurance['atr_edu_deg'] = pd.to_numeric(dfInsurance['atr_edu_deg'])
 
 ######
-## [4] Fill null values with closest neighbors values
+## [4] Drop null values from children column
+## Application: Transformation
+######
+dfInsurance.dropna(subset=['flg_children'], inplace=True)
+
+######
+## [5] Fill null values with closest neighbors values
 ## Application: Transformation
 ######
 
@@ -86,7 +92,7 @@ dfX = pd.DataFrame(data=Xtrans, columns=imputer_column_names)
 dfInsurance.update(dfX)
 
 ######
-## [5] Add Outliers Columns
+## [6] Add Outliers Columns
 ## Application: Addition
 ######
 
@@ -115,7 +121,7 @@ for column in dfInsurance.columns[1:-2]:
 dfInsurance['outlier_candidate'] = dfInsurance['outlier_candidate'].apply(lambda x: x.lstrip('%'))
 
 ######
-## [6] Add column: Total amount of premiums
+## [7] Add column: Total amount of premiums
 ## Application: Addition
 ######
 
@@ -123,14 +129,14 @@ dfInsurance['amt_premium_total'] = (dfInsurance['amt_plob_life'] + dfInsurance['
                                     dfInsurance['amt_plob_health']+ dfInsurance['amt_plob_wcomp'])
 
 ######
-## [7] Add column: First Policy Year to year of reference (1999)
+## [8] Add column: First Policy Year to year of reference (1999)
 ## Application: Addition
 ######
 
 dfInsurance['atr_fpy_to_date'] = pd.Series(1999 - dfInsurance['dt_fpy'], dtype="Int32")
 
 ######
-## [8] Add columns: Rate of LOB Premium to Total Premium
+## [9] Add columns: Rate of LOB Premium to Total Premium
 ## Application: Addition
 ######
 
@@ -141,7 +147,7 @@ dfInsurance['rt_plob_health'] = (dfInsurance['amt_plob_health'] / dfInsurance['a
 dfInsurance['rt_plob_wcomp'] = (dfInsurance['amt_plob_wcomp'] / dfInsurance['amt_premium_total'])
 
 ######
-## [9] Add columns: Create LOB Premium Classes in function of Total Premium
+## [10] Add columns: Create LOB Premium Classes in function of Total Premium
 ## Application: Addition
 ## Refer to EDA Notebook on why these were the defined classes
 ######
@@ -212,7 +218,7 @@ choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'ZEROS','NEGATIVES']
 dfInsurance["fe_bin_plob_household"] = np.select(conditions, choices, default=np.nan)
 
 ######
-## [10] Add Columns: Quadrants on Customer Monetary Value and Claims Rate 
+## [11] Add Columns: Quadrants on Customer Monetary Value and Claims Rate 
 ## Application: Addition
 ## Refer to EDA Notebook on why these were the defined parameters [!]
 ######
@@ -242,4 +248,4 @@ dfInsurance["fe_cmv_cr_quadrant_Type2"] = np.select(conditions, choices, default
 
 
 
-dfInsurance.to_csv(f'./data/{timestr}_dataset.csv')
+dfInsurance.to_csv(f'./Closer-Challenge/data/{timestr}_dataset.csv')
