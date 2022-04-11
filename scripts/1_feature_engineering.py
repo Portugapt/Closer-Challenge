@@ -7,7 +7,7 @@ from sklearn.impute import KNNImputer
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
 ### Import Dataset
-dataset = pd.read_excel('./Closer-Challenge/data/dataset.xlsx')
+dataset = pd.read_excel('./data/dataset.xlsx')
 dfInsurance = dataset.copy()
 
 columns_map = {"Customer Identity":"cod_cust_id",
@@ -28,6 +28,7 @@ columns_map = {"Customer Identity":"cod_cust_id",
 columns_map_reverse = {v: k for k, v in columns_map.items()}
 
 dfInsurance = dfInsurance.rename(columns=columns_map)
+
 
 #np.random.seed(42)
 #if "Set" not in dfInsurance.columns:
@@ -74,6 +75,8 @@ dfInsurance.dropna(subset=['flg_children'], inplace=True)
 ## [5] Fill null values with closest neighbors values
 ## Application: Transformation
 ######
+
+dfInsurance.reset_index(inplace=True, drop = True)
 
 X = dfInsurance.loc[:, ~dfInsurance.columns.isin(['cod_cust_id', 'dsc_edu_deg', 'flg_children'])]
 
@@ -128,6 +131,23 @@ dfInsurance['outlier_candidate'] = dfInsurance['outlier_candidate'].apply(lambda
 dfInsurance['amt_premium_total'] = (dfInsurance['amt_plob_life'] + dfInsurance['amt_plob_household'] + dfInsurance['amt_plob_motor'] + 
                                     dfInsurance['amt_plob_health']+ dfInsurance['amt_plob_wcomp'])
 
+
+######
+## [0] Data main cut, KEEP is usable data, and THROW is data we found is impossible to work with
+## Application: Filter
+######
+
+dfInsurance['DATA_MAIN_CUT'] = np.where(((dfInsurance['dt_fpy'] > 2022) | 
+                        (dfInsurance['atr_cust_age'] > 100) | 
+                        (dfInsurance['amt_cmv'] < -160000) |
+                        (dfInsurance['amt_gms']> 15000) |
+                        (dfInsurance['rt_cr'] > 2) |
+                        (dfInsurance['amt_plob_motor'] > 2000)|
+                        (dfInsurance['amt_plob_household'] > 5000)|
+                        (dfInsurance['amt_plob_health'] > 5000)|
+                        (dfInsurance['amt_plob_wcomp'] > 500)|
+                        (dfInsurance['amt_premium_total'] > 5000)), 'THROW','KEEP')
+
 ######
 ## [8] Add column: First Policy Year to year of reference (1999)
 ## Application: Addition
@@ -153,7 +173,7 @@ dfInsurance['rt_plob_wcomp'] = (dfInsurance['amt_plob_wcomp'] / dfInsurance['amt
 ######
 
 col = 'amt_plob_motor'
-conditions = [dfInsurance[col] > 404, 
+conditions_motor = [dfInsurance[col] > 404, 
               (dfInsurance[col] > 225) & (dfInsurance[col] <= 404), 
               (dfInsurance[col] > 168) & (dfInsurance[col] <= 225),
               (dfInsurance[col] > 90) & (dfInsurance[col] <= 168),
@@ -163,10 +183,10 @@ conditions = [dfInsurance[col] > 404,
               (dfInsurance[col] < 0)]
 choices = [ "A", 'B', 'C', 'D', 'E', 'F', 'ZEROS','NEGATIVES']
 
-dfInsurance["fe_bin_plob_motor"] = np.select(conditions, choices, default=np.nan)
+dfInsurance["fe_bin_plob_motor"] = np.select(conditions_motor, choices, default=np.nan)
 
 col = 'amt_plob_life'
-conditions = [dfInsurance[col] > 131.5, 
+conditions_life = [dfInsurance[col] > 131.5, 
               (dfInsurance[col] > 86.4) & (dfInsurance[col] <= 131.5), 
               (dfInsurance[col] > 58) & (dfInsurance[col] <= 86.4),
               (dfInsurance[col] > 35.84) & (dfInsurance[col] <= 58),
@@ -178,10 +198,10 @@ conditions = [dfInsurance[col] > 131.5,
               (dfInsurance[col] < 0)]
 choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'ZEROS','NEGATIVES']
 
-dfInsurance["fe_bin_plob_life"] = np.select(conditions, choices, default=np.nan)
+dfInsurance["fe_bin_plob_life"] = np.select(conditions_life, choices, default=np.nan)
 
 col = 'amt_plob_health'
-conditions = [dfInsurance[col] > 156, 
+conditions_health = [dfInsurance[col] > 156, 
               (dfInsurance[col] > 95.3) & (dfInsurance[col] <= 156), 
               (dfInsurance[col] > 47.2) & (dfInsurance[col] <= 95.3),
               (dfInsurance[col] > 0) & (dfInsurance[col] <= 47.2),
@@ -189,10 +209,10 @@ conditions = [dfInsurance[col] > 156,
               (dfInsurance[col] < 0)]
 choices = ['A', 'B', 'C', 'D', 'ZEROS','NEGATIVES']
 
-dfInsurance["fe_bin_plob_health"] = np.select(conditions, choices, default=np.nan)
+dfInsurance["fe_bin_plob_health"] = np.select(conditions_health, choices, default=np.nan)
 
 col = 'amt_plob_wcomp'
-conditions = [dfInsurance[col] > 69, 
+conditions_wcomp = [dfInsurance[col] > 69, 
               (dfInsurance[col] > 44.68) & (dfInsurance[col] <= 69), 
               (dfInsurance[col] > 22.11) & (dfInsurance[col] <= 44.68),
               (dfInsurance[col] > 6.33) & (dfInsurance[col] <= 22.11),
@@ -201,10 +221,10 @@ conditions = [dfInsurance[col] > 69,
               (dfInsurance[col] < 0)]
 choices = ['A', 'B', 'C', 'D', 'E', 'ZEROS','NEGATIVES']
 
-dfInsurance["fe_bin_plob_wcomp"] = np.select(conditions, choices, default=np.nan)
+dfInsurance["fe_bin_plob_wcomp"] = np.select(conditions_wcomp, choices, default=np.nan)
 
 col = 'amt_plob_household'
-conditions = [dfInsurance[col] > 529.8, 
+conditions_household = [dfInsurance[col] > 529.8, 
               (dfInsurance[col] > 368.1) & (dfInsurance[col] <= 529.8), 
               (dfInsurance[col] > 255.3) & (dfInsurance[col] <= 368.1),
               (dfInsurance[col] > 157.5) & (dfInsurance[col] <= 255.3),
@@ -215,7 +235,7 @@ conditions = [dfInsurance[col] > 529.8,
               (dfInsurance[col] < 0)]
 choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'ZEROS','NEGATIVES']
 
-dfInsurance["fe_bin_plob_household"] = np.select(conditions, choices, default=np.nan)
+dfInsurance["fe_bin_plob_household"] = np.select(conditions_household, choices, default=np.nan)
 
 ######
 ## [11] Add Columns: Quadrants on Customer Monetary Value and Claims Rate 
@@ -247,5 +267,86 @@ choices = ['Q1', 'Q4', 'Q2', 'Q3']
 dfInsurance["fe_cmv_cr_quadrant_Type2"] = np.select(conditions, choices, default=np.nan)
 
 
+######
+## [12] Data Types: Force columns to certain datatypes 
+## Application: Transformation
+######
 
-dfInsurance.to_csv(f'./Closer-Challenge/data/{timestr}_dataset.csv')
+dfInsurance['dt_fpy'] = dfInsurance['dt_fpy'].astype('int64')
+dfInsurance['atr_cust_age'] = dfInsurance['atr_cust_age'].astype('int64')
+dfInsurance['atr_gla'] = dfInsurance['atr_gla'].astype('int64')
+dfInsurance['flg_children'] = dfInsurance['flg_children'].astype('int64')
+
+######
+## [13] Scale Tree Binned data
+## Application: Addition
+######
+# https://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
+# https://stackoverflow.com/questions/67656988/group-by-minmaxscaler-in-pandas-dataframe
+
+## Motor
+choices = [6, 5, 4, 3, 2, 1, 0, -1]
+dfInsurance["fe_int_plob_motor_b"] = np.select(conditions_motor, choices, default=np.nan)
+dfInsurance["fe_int_plob_motor_a"] = dfInsurance["fe_int_plob_motor_b"]-1
+
+g = dfInsurance.groupby(['DATA_MAIN_CUT', 'fe_bin_plob_motor'])['amt_plob_motor']
+min_, max_ = g.transform('min'), g.transform('max')
+dfInsurance['fe_amt_plob_motor' + '_scale'] = round((((dfInsurance["fe_int_plob_motor_b"]-dfInsurance["fe_int_plob_motor_a"])*(dfInsurance['amt_plob_motor'] - min_)) / 
+                                                (max_ - min_)) + dfInsurance["fe_int_plob_motor_a"],5)
+dfInsurance.drop(columns = ['fe_int_plob_motor_a', 'fe_int_plob_motor_b'], inplace=True)
+dfInsurance['fe_amt_plob_motor' + '_scale'] = dfInsurance['fe_amt_plob_motor' + '_scale'].fillna(0)
+
+## Life
+choices = [8,7,6, 5, 4, 3, 2, 1, 0, -1]
+dfInsurance["fe_int_plob_life_b"] = np.select(conditions_life, choices, default=np.nan)
+dfInsurance["fe_int_plob_life_a"] = dfInsurance["fe_int_plob_life_b"]-1
+
+g = dfInsurance.groupby(['DATA_MAIN_CUT', 'fe_bin_plob_life'])['amt_plob_life']
+min_, max_ = g.transform('min'), g.transform('max')
+dfInsurance['fe_amt_plob_life' + '_scale'] = round((((dfInsurance["fe_int_plob_life_b"]-dfInsurance["fe_int_plob_life_a"])*(dfInsurance['amt_plob_life'] - min_)) / 
+                                                (max_ - min_)) + dfInsurance["fe_int_plob_life_a"],5)
+dfInsurance.drop(columns = ['fe_int_plob_life_a', 'fe_int_plob_life_b'], inplace=True)
+dfInsurance['fe_amt_plob_life' + '_scale'] = dfInsurance['fe_amt_plob_life' + '_scale'].fillna(0)
+
+## Health
+choices = [4, 3, 2, 1, 0, -1]
+dfInsurance["fe_int_plob_health_b"] = np.select(conditions_health, choices, default=np.nan)
+dfInsurance["fe_int_plob_health_a"] = dfInsurance["fe_int_plob_health_b"]-1
+
+g = dfInsurance.groupby(['DATA_MAIN_CUT', 'fe_bin_plob_health'])['amt_plob_health']
+min_, max_ = g.transform('min'), g.transform('max')
+dfInsurance['fe_amt_plob_health' + '_scale'] = round((((dfInsurance["fe_int_plob_health_b"]-dfInsurance["fe_int_plob_health_a"])*(dfInsurance['amt_plob_health'] - min_)) / 
+                                                (max_ - min_)) + dfInsurance["fe_int_plob_health_a"],5)
+dfInsurance.drop(columns = ['fe_int_plob_health_a', 'fe_int_plob_health_b'], inplace=True)
+dfInsurance['fe_amt_plob_health' + '_scale'] = dfInsurance['fe_amt_plob_health' + '_scale'].fillna(0)
+
+## Work Compensation
+choices = [5, 4, 3, 2, 1, 0, -1]
+dfInsurance["fe_int_plob_wcomp_b"] = np.select(conditions_wcomp, choices, default=np.nan)
+dfInsurance["fe_int_plob_wcomp_a"] = dfInsurance["fe_int_plob_wcomp_b"]-1
+
+g = dfInsurance.groupby(['DATA_MAIN_CUT', 'fe_bin_plob_wcomp'])['amt_plob_wcomp']
+min_, max_ = g.transform('min'), g.transform('max')
+dfInsurance['fe_amt_plob_wcomp' + '_scale'] = round((((dfInsurance["fe_int_plob_wcomp_b"]-dfInsurance["fe_int_plob_wcomp_a"])*(dfInsurance['amt_plob_wcomp'] - min_)) / 
+                                                (max_ - min_)) + dfInsurance["fe_int_plob_wcomp_a"],5)
+dfInsurance.drop(columns = ['fe_int_plob_wcomp_a', 'fe_int_plob_wcomp_b'], inplace=True)
+dfInsurance['fe_amt_plob_wcomp' + '_scale'] = dfInsurance['fe_amt_plob_wcomp' + '_scale'].fillna(0)
+
+## Household
+choices = [7, 6, 5, 4, 3, 2, 1, 0, -1]
+dfInsurance["fe_int_plob_household_b"] = np.select(conditions_household, choices, default=np.nan)
+dfInsurance["fe_int_plob_household_a"] = dfInsurance["fe_int_plob_household_b"]-1
+
+g = dfInsurance.groupby(['DATA_MAIN_CUT', 'fe_bin_plob_household'])['amt_plob_household']
+min_, max_ = g.transform('min'), g.transform('max')
+dfInsurance['fe_amt_plob_household' + '_scale'] = round((((dfInsurance["fe_int_plob_household_b"]-dfInsurance["fe_int_plob_household_a"])*(dfInsurance['amt_plob_household'] - min_)) / 
+                                                (max_ - min_)) + dfInsurance["fe_int_plob_household_a"],5)
+dfInsurance.drop(columns = ['fe_int_plob_household_a', 'fe_int_plob_household_b'], inplace=True)
+dfInsurance['fe_amt_plob_household' + '_scale'] = dfInsurance['fe_amt_plob_household' + '_scale'].fillna(0)
+
+######
+## [13] Scale Features to logarithm
+## Application: Addition
+######
+
+dfInsurance.to_csv(f'./data/{timestr}_dataset.csv', index=False)
