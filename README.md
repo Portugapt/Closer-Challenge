@@ -4,9 +4,11 @@ Closer Project Challenge on Insurance Data
 Table of content
 - [Closer-Challenge](#closer-challenge)
 - [Goal](#goal)
-- [Setup git](#setup-git)
-- [Setup github](#setup-github)
-- [Pull repository](#pull-repository)
+  - [Version Control](#version-control)
+  - [Setup git](#setup-git)
+  - [Setup github](#setup-github)
+  - [Pull repository](#pull-repository)
+- [Conda Environment](#conda-environment)
 # Goal
 
 Taken from the slides:
@@ -20,7 +22,8 @@ O vosso objetivo é desenvolver uma segmentação dos clientes de forma a que o 
 No final deverão apresentar a vossa proposta ao cliente.
 ```
 
-# Setup git
+## Version Control
+## Setup git
 
 Download: https://git-scm.com/download/win
 
@@ -31,7 +34,7 @@ git config --global user.name "FIRST_NAME LAST_NAME"
 git config --global user.email "MY_NAME@example.com"
 ```
 
-# Setup github
+## Setup github
 
 First:
 ```bash
@@ -52,9 +55,27 @@ Steps:
 It opens a page in the browser, we put the one-time code, and login with our account.  
 All should be set now.
 
-# Pull repository
+## Pull repository
 
 Write in the terminal:
 ```bash
 gh repo clone Portugapt/Closer-Challenge
 ```
+
+# Conda Environment
+
+https://stackoverflow.com/questions/59657306/invalidarchiveerror-when-executing-conda-install-notebook
+> P.S.: Make sure you installed Anaconda or Miniconda into a directory that contains only 7-bit ASCII characters and no spaces, such as C:\anaconda!
+
+To do that: 
+https://stackoverflow.com/questions/58131555/how-to-change-the-path-of-conda-base
+```bash
+conda config --prepend pkgs_dirs C:/.conda/pkgs
+conda config --prepend envs_dirs C:/.conda/envs
+```
+
+Then create the conda environment
+```bash
+conda env create -f environment.yaml
+```
+
