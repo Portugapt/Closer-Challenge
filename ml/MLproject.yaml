@@ -1,0 +1,17 @@
+name: Closer-Challenge
+conda_env: environment.yaml
+
+entry_points:
+  main:
+    parameters:
+      log_this_string: string
+    command: "python z_test.py {log_this_string}"
+  train_client_value:
+    parameters:
+      data_file: path
+      regularization: {type: float, default: 0.1}
+    command: "python z_train_client_value.py -r {regularization} {data_file}"
+  validate_client_value:
+    parameters:
+      data_file: path
+    command: "python z_validate_client_value.py {data_file}"
