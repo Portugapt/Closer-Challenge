@@ -1,6 +1,7 @@
 name: CloserChallenge
 dependencies:
   - python=3.8
+  - pip
   - pip:
     # Utility
     - unittest2>=1.1.0
@@ -20,7 +21,7 @@ dependencies:
     - shap>=0.40.0
     - lime>=0.2.0.1
     # ML
-    - mlflow>=1.24.0
+    - mlflow==1.22.0
     - scikit-learn>=1.0.2
     # Plotting & Viz
     - matplotlib>=3.5.1
