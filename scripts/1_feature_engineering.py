@@ -30,9 +30,9 @@ columns_map_reverse = {v: k for k, v in columns_map.items()}
 dfInsurance = dfInsurance.rename(columns=columns_map)
 
 
-#np.random.seed(42)
-#if "Set" not in dfInsurance.columns:
-#    dfInsurance["Set"] = np.random.choice(["train", "test"], p =[.7, .3], size=(dfInsurance.shape[0],))
+np.random.seed(42)
+if "Set" not in dfInsurance.columns:
+    dfInsurance["Set"] = np.random.choice(["train", "test"], p =[.7, .3], size=(dfInsurance.shape[0],))
 
 ######
 ## [1] Remove Duplicates 
@@ -78,7 +78,7 @@ dfInsurance.dropna(subset=['flg_children'], inplace=True)
 
 dfInsurance.reset_index(inplace=True, drop = True)
 
-X = dfInsurance.loc[:, ~dfInsurance.columns.isin(['cod_cust_id', 'dsc_edu_deg', 'flg_children'])]
+X = dfInsurance.loc[:, ~dfInsurance.columns.isin(['cod_cust_id', 'dsc_edu_deg', 'flg_children', 'Set'])]
 
 # define imputer
 imputer = KNNImputer(n_neighbors=5, weights='uniform', metric='nan_euclidean')
@@ -115,7 +115,7 @@ def interquartile_range(column):
 
 dfInsurance['outlier_candidate'] = ''
 for column in dfInsurance.columns[1:-2]:
-    if column not in('cod_cust_id', 'dt_fpy', 'atr_cust_age', 'dsc_edu_deg', 'atr_gla', 'flg_children'):
+    if column not in('cod_cust_id', 'dt_fpy', 'atr_cust_age', 'dsc_edu_deg', 'atr_gla', 'flg_children', 'Set'):
         
         lim_sup, lim_inf = interquartile_range(dfInsurance[column])
 
@@ -348,5 +348,68 @@ dfInsurance['fe_amt_plob_household' + '_scale'] = dfInsurance['fe_amt_plob_house
 ## [13] Scale Features to logarithm
 ## Application: Addition
 ######
+
+dfInsurance['log_amt_plob_life'] = np.where(min(dfInsurance['amt_plob_life']) <= 0,
+np.log(dfInsurance['amt_plob_life'] + abs(min(dfInsurance['amt_plob_life'])) + 1),
+np.log(abs(dfInsurance['amt_plob_life'])))
+
+dfInsurance['log_amt_plob_household'] = np.where(min(dfInsurance['amt_plob_household']) <= 0,
+np.log(dfInsurance['amt_plob_household'] + abs(min(dfInsurance['amt_plob_household'])) + 1),
+np.log(abs(dfInsurance['amt_plob_household'])))
+
+dfInsurance['log_amt_plob_wcomp'] = np.where(min(dfInsurance['amt_plob_wcomp']) <= 0,
+np.log(dfInsurance['amt_plob_wcomp'] + abs(min(dfInsurance['amt_plob_wcomp'])) + 1),
+np.log(abs(dfInsurance['amt_plob_wcomp'])))
+
+dfInsurance['log_amt_premium_total'] = np.where(min(dfInsurance['amt_premium_total']) <= 0,
+np.log(dfInsurance['amt_premium_total'] + abs(min(dfInsurance['amt_premium_total'])) + 1),
+np.log(abs(dfInsurance['amt_premium_total'])))
+
+dfInsurance['log_rt_plob_life'] = np.where(min(dfInsurance['rt_plob_life']) <= 0,
+np.log(dfInsurance['rt_plob_life'] + abs(min(dfInsurance['rt_plob_life'])) + 1),
+np.log(abs(dfInsurance['rt_plob_life'])))
+
+dfInsurance['log_rt_plob_household'] = np.where(min(dfInsurance['rt_plob_household']) <= 0,
+np.log(dfInsurance['rt_plob_household'] + abs(min(dfInsurance['rt_plob_household'])) + 1),
+np.log(abs(dfInsurance['rt_plob_household'])))
+
+dfInsurance['log_rt_plob_motor'] = np.where(min(dfInsurance['rt_plob_motor']) <= 0,
+np.log(dfInsurance['rt_plob_motor'] + abs(min(dfInsurance['rt_plob_motor'])) + 1),
+np.log(abs(dfInsurance['rt_plob_motor'])))
+
+dfInsurance['log_rt_plob_health'] = np.where(min(dfInsurance['rt_plob_health']) <= 0,
+np.log(dfInsurance['rt_plob_health'] + abs(min(dfInsurance['rt_plob_health'])) + 1),
+np.log(abs(dfInsurance['rt_plob_health'])))
+
+dfInsurance['log_rt_plob_wcomp'] = np.where(min(dfInsurance['rt_plob_wcomp']) <= 0,
+np.log(dfInsurance['rt_plob_wcomp'] + abs(min(dfInsurance['rt_plob_wcomp'])) + 1),
+np.log(abs(dfInsurance['rt_plob_wcomp'])))
+
+######
+## [14] Scale Features with square root
+## Application: Addition
+######
+
+dfInsurance['sqrt_amt_cmv'] = np.where(min(dfInsurance['amt_cmv']) <= 0, 
+                                             np.sqrt(dfInsurance['amt_cmv'] + abs(min(dfInsurance['amt_cmv'])) + 1), 
+                                             np.sqrt(dfInsurance['amt_cmv']))
+
+######
+## [15] Scale Features with MinMax
+## Application: Addition
+######
+
+
+######
+## [16] Scale Features with MinMax
+## Application: Addition
+######
+
+dfInsurance['sqrt_amt_cmv'] = np.where(min(dfInsurance['amt_cmv']) <= 0,
+np.sqrt(dfInsurance['amt_cmv'] + abs(min(dfInsurance['amt_cmv'])) + 1),
+np.sqrt(dfInsurance['amt_cmv']))
+
+
+
 
 dfInsurance.to_csv(f'./data/{timestr}_dataset.csv', index=False)
