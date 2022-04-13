@@ -410,6 +410,27 @@ np.sqrt(dfInsurance['amt_cmv'] + abs(min(dfInsurance['amt_cmv'])) + 1),
 np.sqrt(dfInsurance['amt_cmv']))
 
 
+######
+## [17] Customer Claims Cost
+## Application: Addition
+######
+
+dfInsurance['amt_gys'] = dfInsurance['amt_gms'] * 12
+
+######
+## [18] Customer Yearly Salary 
+## Application: Addition
+######
+
+dfInsurance['amt_claims_total'] = dfInsurance['rt_cr'] * dfInsurance['amt_premium_total']
+
+######
+## [19] Customer Effort Rate - Cost of premiums in relation to customer income
+## Application: Addition
+######
+
+dfInsurance['rt_premiums_year'] = dfInsurance['amt_premium_total'] / dfInsurance['amt_gys']
+dfInsurance['rt_claims_year'] = dfInsurance['amt_claims_total'] / dfInsurance['amt_gys']
 
 
 dfInsurance.to_csv(f'./data/{timestr}_dataset.csv', index=False)
