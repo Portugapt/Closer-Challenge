@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/HelderVarela/Documents/Closer_challenge/Closer-Challenge/notebook/mlruns/2/cbb5bec656da4f04a8cf3775b90b2f09/artifacts
+end_time: 1649839567398
+entry_point_name: ''
+experiment_id: '2'
+lifecycle_stage: active
+name: ''
+run_id: cbb5bec656da4f04a8cf3775b90b2f09
+run_uuid: cbb5bec656da4f04a8cf3775b90b2f09
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1649839431816
+status: 3
+tags: []
+user_id: HelderVarela

@@ -1,0 +1,4 @@
+artifact_location: file:///C:/Users/HelderVarela/Documents/Closer_challenge/Closer-Challenge/notebook/mlruns/2
+experiment_id: '2'
+lifecycle_stage: active
+name: Proof-of-concept KMeans_Experiment_HV
