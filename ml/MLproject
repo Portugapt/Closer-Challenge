@@ -1,0 +1,17 @@
+name: tutorial
+
+conda_env: conda.yaml
+
+entry_points:
+  ml_kmeans_client_value:
+    parameters:
+      n_klusters: int
+      file_path: str
+      k_initialization: {type: str, default: random}
+      max_iter: {type: int, default: 300}
+
+    command: "python kmeans_model1.py \
+              --file_path {file_path} \
+              --n_klusters {n_klusters} \
+              --k_init {k_initialization} \
+              --max_iter {max_iter}"
