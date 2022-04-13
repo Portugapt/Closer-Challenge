@@ -7,7 +7,7 @@ from sklearn.impute import KNNImputer
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
 ### Import Dataset
-dataset = pd.read_excel('./data/dataset.xlsx')
+dataset = pd.read_excel('./Closer-Challenge/data/dataset.xlsx')
 dfInsurance = dataset.copy()
 
 columns_map = {"Customer Identity":"cod_cust_id",
@@ -433,4 +433,28 @@ dfInsurance['rt_premiums_year'] = dfInsurance['amt_premium_total'] / dfInsurance
 dfInsurance['rt_claims_year'] = dfInsurance['amt_claims_total'] / dfInsurance['amt_gys']
 
 
-dfInsurance.to_csv(f'./data/{timestr}_dataset.csv', index=False)
+conditions_credit_score_proxy = [(dfInsurance['amt_premium_total'] > 1000) & (dfInsurance['amt_claims_total'] < 740), 
+                          (dfInsurance['amt_premium_total'] > 1000) & (dfInsurance['amt_claims_total'] > 740),]
+choices = [1, -1]
+dfInsurance["atr_credit_score_proxy"] = np.select(conditions_credit_score_proxy, choices, default=0)
+col = 'amt_plob_motor'
+conditions_motor = [dfInsurance[col] > 543, 
+              (dfInsurance[col] > 425) & (dfInsurance[col] <= 543), 
+              (dfInsurance[col] > 254) & (dfInsurance[col] <= 425),
+              (dfInsurance[col] > 0) & (dfInsurance[col] <= 254),
+              (dfInsurance[col] == 0),
+              (dfInsurance[col] < 0)]
+choices = [ "A", 'B', 'C', 'D', 'ZEROS','NEGATIVES']
+dfInsurance["fe_bin_cmv_motor"] = np.select(conditions_motor, choices, default=np.nan)
+choices = [4, 3, 2, 1, 0, -1]
+dfInsurance["fe_int_plob_motor_b"] = np.select(conditions_motor, choices, default=np.nan)
+dfInsurance["fe_int_plob_motor_a"] = dfInsurance["fe_int_plob_motor_b"]-1
+g = dfInsurance.groupby(['DATA_MAIN_CUT', 'fe_bin_cmv_motor'])['amt_plob_motor']
+min_, max_ = g.transform('min'), g.transform('max')
+dfInsurance['fe_cmv_motor' + '_scale'] = round((((dfInsurance["fe_int_plob_motor_b"]-dfInsurance["fe_int_plob_motor_a"])*(dfInsurance['amt_plob_motor'] - min_)) / 
+                                                (max_ - min_)) + dfInsurance["fe_int_plob_motor_a"],5)
+dfInsurance.drop(columns = ['fe_int_plob_motor_a', 'fe_int_plob_motor_b'], inplace=True)
+dfInsurance['fe_cmv_motor' + '_scale'] = dfInsurance['fe_cmv_motor' + '_scale'].fillna(0)
+
+
+dfInsurance.to_csv(f'./Closer-Challenge/data/{timestr}_dataset.csv', index=False)

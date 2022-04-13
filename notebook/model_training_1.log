@@ -1,0 +1,55 @@
+root - INFO - Experiment Set. Experiment ID: 2
+root - DEBUG - Artifact Location: file:///C:/Users/PedroSantos/Documents/challenge/Closer-Challenge/notebook/mlruns/2
+root - DEBUG - Tags: {}
+root - DEBUG - Lifecycle_stage: active
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\jedi\third_party\typeshed\stdlib\3\sys.pyi
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\frame.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\__init__.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\__init__.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\generic.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\base.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\accessor.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\indexing.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\core\arraylike.py
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\_typing.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\typing.py
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\jedi\third_party\typeshed\stdlib\3\typing.pyi
+parso.cache - DEBUG - pickle loaded: C:\Users\PedroSantos\anaconda3\envs\dsacademy\lib\site-packages\pandas\_libs\__init__.py
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
+git.cmd - DEBUG - Popen(['git', 'version'], cwd=C:\Users\PedroSantos\Documents\challenge\Closer-Challenge\notebook, universal_newlines=False, shell=None, istream=None)
+git.cmd - DEBUG - Popen(['git', 'version'], cwd=C:\Users\PedroSantos\Documents\challenge\Closer-Challenge\notebook, universal_newlines=False, shell=None, istream=None)
+git.util - DEBUG - Failed checking if running in CYGWIN due to: FileNotFoundError(2, 'The system cannot find the file specified', None, 2, None)
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
+parso.python.diff - DEBUG - diff parser start
+parso.python.diff - DEBUG - line_lengths old: 1; new: 1
+parso.python.diff - DEBUG - -> code[replace] old[1:1] new[1:1]
+parso.python.diff - DEBUG - parse_part from 1 to 1 (to 0 in part parser)
+parso.python.diff - DEBUG - diff parser end
