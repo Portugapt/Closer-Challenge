@@ -4,5 +4,13 @@ notebook/.ipynb_checkpoints/EDA-Joao-checkpoint.ipynb
 ml/mlruns/*
 business/Master Template Deck_Jun21.pptx
 notebook/.ipynb_checkpoints/Model Training-checkpoint.ipynb
-notebook/mlruns
+
+
+
 notebook/model_training_1.log
+
+# MLFlow Runs
+notebook/mlruns/*
+!notebook/mlruns/3/meta.yaml
+!notebook/mlruns/3/42b05ce5d54241f483974e564757e97e/
+!notebook/mlruns/3/2ad5c2d2063b42c090ab80a5b9704402/
