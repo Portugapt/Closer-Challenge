@@ -394,6 +394,9 @@ dfInsurance['norm_fpy_to_date'] = sd_scaler.fit_transform(dfInsurance[['atr_fpy_
 dfInsurance['sqrt_amt_cmv'] = np.where(min(dfInsurance['amt_cmv']) <= 0,
 np.sqrt(dfInsurance['amt_cmv'] + abs(min(dfInsurance['amt_cmv'])) + 1),
 np.sqrt(dfInsurance['amt_cmv']))
+dfInsurance['minmax_amt_cmv'] = scaler.fit_transform(dfInsurance[['amt_cmv']])
+dfInsurance['norm_amt_cmv'] = sd_scaler.fit_transform(dfInsurance[['amt_cmv']])
+
 
 ######
 ## Total Premium
