@@ -23,7 +23,7 @@ X_pca = pca.fit_transform(dfInsurance[pca_columns_1])
 dfInsurance[['PCA1_','PCA1_2','PCA1_3','PCA1_4','PCA1_5','PCA1_6']] = X_pca
 
 pca_columns_2 = [column for column in dfInsurance.select_dtypes(include=['int64', 'float64']) \
-               if (column not in ['cod_cust_id'])]
+               if (column not in ['cod_cust_id']) and ("PCA1_" not in column)]
 
 pca = PCA(n_components=6)
 X_pca = pca.fit_transform(dfInsurance[pca_columns_2])
